@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+/*
+  The Strategic Dentist — design tokens.
+  Colour roles mirror how a notebook actually gets marked up:
+  paper / ink / highlighter (what matters) / ballpoint (the hand) / correction (the brand voice).
+*/
+@theme {
+  --color-paper: #fffbf5;
+  --color-paper-2: #f7efe4;
+  --color-paper-3: #efe3d2;
+
+  --color-ink: #1c1626;
+  --color-ink-soft: #4a4256;
+
+  --color-pink: #e4326e;
+  --color-pink-deep: #a8134a;
+  --color-pink-wash: #fde3ec;
+
+  --color-highlight: #ffc93c;
+  --color-butter: #fdeeb0;
+  --color-gold: #e08a00;
+
+  --color-pen: #2a3ea8;
+  --color-pen-light: #7c89d9;
+  --color-pen-wash: #e5e8f8;
+
+  --color-line: #e2d5c3;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-prose: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-hand: var(--font-kalam), ui-serif, cursive;
+  --font-meta: var(--font-space-mono), ui-monospace, monospace;
+
+  --ease-out-back: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Focus is never removed, only restyled. */
+  :focus-visible {
+    outline: 3px solid var(--color-pen);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-highlight);
+    color: var(--color-ink);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Flat offset shadow — the brand never uses blurred/soft shadows. */
+  .shadow-hard {
+    box-shadow: 4px 4px 0 0 var(--color-ink);
+  }
+  .shadow-hard-pink {
+    box-shadow: 4px 4px 0 0 var(--color-pink);
+  }
+  .shadow-hard-pen {
+    box-shadow: 4px 4px 0 0 var(--color-pen);
+  }
+  .shadow-hard-sm {
+    box-shadow: 2px 2px 0 0 var(--color-ink);
+  }
+
+  /* Faint ruled-paper texture for full-bleed cream sections. */
+  .surface-ruled {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 31px,
+      color-mix(in srgb, var(--color-line) 55%, transparent) 31px,
+      color-mix(in srgb, var(--color-line) 55%, transparent) 32px
+    );
+  }
+
+  /* Faint grid, used on dark panels. */
+  .surface-grid {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--color-paper) 8%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-paper) 8%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 44px 44px;
+  }
+
+  .prose-note {
+    font-family: var(--font-hand);
+    color: var(--color-pen);
+    line-height: 1.45;
+  }
+
+  .label-meta {
+    font-family: var(--font-meta);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+}
+
+@layer utilities {
+  /* Scroll reveal.
+     Scoped to html.js and to no-preference motion, so content is never hidden
+     from a no-JS visitor or from anyone who asked for reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .js [data-reveal] {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s var(--ease-out-back);
+      transition-delay: var(--reveal-delay, 0ms);
+    }
+    .js [data-reveal="shown"] {
+      opacity: 1;
+      transform: none;
+    }
+    /* Highlighter swipe draws itself in, one stroke per wrapped line. */
+    .js [data-swipe] {
+      background-size: 0% 0.42em;
+      transition: background-size 0.5s ease-out;
+      transition-delay: var(--reveal-delay, 120ms);
+    }
+    .js [data-swipe="shown"] {
+      background-size: 100% 0.42em;
+    }
+    /* Hand-drawn strokes draw themselves. */
+    .js [data-draw] {
+      stroke-dasharray: var(--draw-length, 300);
+      stroke-dashoffset: var(--draw-length, 300);
+      transition: stroke-dashoffset 0.9s ease-out;
+      transition-delay: var(--reveal-delay, 150ms);
+    }
+    .js [data-draw="shown"] {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .text-balance-none {
+    text-wrap: initial;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

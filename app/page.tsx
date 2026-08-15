@@ -12,7 +12,6 @@ import { Section } from "@/components/layout/section";
 import { ButtonLink } from "@/components/ui/button";
 import { Circled, HandArrow, Highlight, MarginNote } from "@/components/ui/marks";
 import { StickyNote } from "@/components/ui/sticky-note";
-import { Portrait } from "@/components/ui/portrait";
 import { TryThisCard } from "@/components/ui/try-this";
 import { SwipeCarousel } from "@/components/ui/swipe-carousel";
 import { LoopDiagram } from "@/components/ui/loop-diagram";
@@ -486,7 +485,14 @@ export default function HomePage() {
             className="relative border-2 border-ink bg-paper-2 p-6 shadow-hard"
             data-reveal=""
           >
-            <Portrait className="aspect-[4/5] w-full bg-butter/35" />
+            <div
+              aria-hidden="true"
+              className="flex aspect-[4/5] items-center justify-center border-2 border-dashed border-ink/25 bg-butter/50"
+            >
+              <span className="prose-note px-6 text-center text-[1.05rem]">
+                a photo goes here eventually
+              </span>
+            </div>
             <p className="label-meta mt-4 text-pink-deep">{site.author}</p>
           </div>
 

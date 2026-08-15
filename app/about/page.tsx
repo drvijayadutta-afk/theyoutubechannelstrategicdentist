@@ -6,6 +6,7 @@ import { Section } from "@/components/layout/section";
 import { ButtonLink } from "@/components/ui/button";
 import { Circled, HandArrow, Highlight, MarginNote } from "@/components/ui/marks";
 import { StickyNote } from "@/components/ui/sticky-note";
+import { Portrait } from "@/components/ui/portrait";
 import { NewsletterPanel } from "@/components/forms/newsletter-panel";
 import { SubscribeYouTube } from "@/components/cta/subscribe-youtube";
 import { revealDelay } from "@/components/ui/reveal";
@@ -64,14 +65,7 @@ export default function AboutPage() {
 
             <div className="flex flex-col gap-5" data-reveal="" style={revealDelay(3)}>
               <div className="border-2 border-ink bg-paper-2 p-5 shadow-hard">
-                <div
-                  aria-hidden="true"
-                  className="flex aspect-[4/5] items-center justify-center border-2 border-dashed border-ink/25 bg-butter/50"
-                >
-                  <span className="prose-note px-6 text-center text-[1.05rem]">
-                    a photo goes here eventually
-                  </span>
-                </div>
+                <Portrait className="aspect-[4/5] w-full bg-butter/35" />
               </div>
               <StickyNote label="Currently" tone="pink" rotate={1.5}>
                 Reading about how people decide to trust a clinic before

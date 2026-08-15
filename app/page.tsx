@@ -13,6 +13,8 @@ import { ButtonLink } from "@/components/ui/button";
 import { Circled, HandArrow, Highlight, MarginNote } from "@/components/ui/marks";
 import { StickyNote } from "@/components/ui/sticky-note";
 import { TryThisCard } from "@/components/ui/try-this";
+import { SwipeCarousel } from "@/components/ui/swipe-carousel";
+import { LoopDiagram } from "@/components/ui/loop-diagram";
 import { PillarCard } from "@/components/content/pillar-card";
 import { ArticleCard } from "@/components/content/article-card";
 import { ResourceCard } from "@/components/content/resource-card";
@@ -28,6 +30,32 @@ const ladderOffset = [
   "md:ml-[9rem]",
   "md:ml-[12rem]",
   "md:ml-[15rem]",
+];
+
+/* Real half-finished thoughts, not decoration — used both in the desktop
+   pinned stack and the mobile swipe carousel below it. */
+const pinnedNotes = [
+  {
+    label: "Just learned",
+    tone: "butter" as const,
+    rotate: -2.5,
+    offset: "lg:mr-10",
+    text: "Length is the easiest signal a summariser has, and almost never the right one. The important moment in a meeting is usually the shortest one.",
+  },
+  {
+    label: "Currently testing",
+    tone: "pink" as const,
+    rotate: 1.8,
+    offset: "lg:ml-12",
+    text: "Does naming a real number in the first line change who replies? Eight posts in, four to go.",
+  },
+  {
+    label: "Changed my mind about",
+    tone: "pen" as const,
+    rotate: -1.2,
+    offset: "lg:mr-6",
+    text: "Thought hooks were the lever. They weren't. Specificity was doing all the work.",
+  },
 ];
 
 export default function HomePage() {
@@ -92,44 +120,36 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Pinned notes — real half-finished thoughts, not decoration. */}
-            <div className="relative mx-auto flex w-full max-w-md flex-col gap-4 sm:max-w-lg lg:max-w-none">
-              <StickyNote
-                label="Just learned"
-                tone="butter"
-                rotate={-2.5}
-                className="lg:mr-10"
-                data-reveal=""
-                style={revealDelay(2)}
+            {/* Pinned notes — real half-finished thoughts, not decoration.
+                Mobile swipes through them; lg+ gets the pinned, draggable stack. */}
+            <div className="lg:hidden" data-reveal="" style={revealDelay(2)}>
+              <SwipeCarousel
+                ariaLabel="What I'm currently learning"
+                itemClassName="w-[78%] max-w-xs sm:w-[55%] sm:max-w-sm"
               >
-                Length is the easiest signal a summariser has, and almost never
-                the right one. The important moment in a meeting is usually the
-                shortest one.
-              </StickyNote>
+                {pinnedNotes.map((note) => (
+                  <StickyNote key={note.label} label={note.label} tone={note.tone} rotate={note.rotate}>
+                    {note.text}
+                  </StickyNote>
+                ))}
+              </SwipeCarousel>
+            </div>
 
-              <StickyNote
-                label="Currently testing"
-                tone="pink"
-                rotate={1.8}
-                className="lg:ml-12"
-                data-reveal=""
-                style={revealDelay(3)}
-              >
-                Does naming a real number in the first line change who replies?
-                Eight posts in, four to go.
-              </StickyNote>
-
-              <StickyNote
-                label="Changed my mind about"
-                tone="pen"
-                rotate={-1.2}
-                className="lg:mr-6"
-                data-reveal=""
-                style={revealDelay(4)}
-              >
-                Thought hooks were the lever. They weren&rsquo;t. Specificity
-                was doing all the work.
-              </StickyNote>
+            <div className="relative mx-auto hidden w-full max-w-md flex-col gap-4 sm:max-w-lg lg:flex lg:max-w-none">
+              {pinnedNotes.map((note, i) => (
+                <StickyNote
+                  key={note.label}
+                  label={note.label}
+                  tone={note.tone}
+                  rotate={note.rotate}
+                  draggable
+                  className={note.offset}
+                  data-reveal=""
+                  style={revealDelay(i + 2)}
+                >
+                  {note.text}
+                </StickyNote>
+              ))}
             </div>
           </div>
         </div>
@@ -169,15 +189,22 @@ export default function HomePage() {
         eyebrow="The philosophy"
         note={<>the loop, not the ladder</>}
       >
-        <div className="max-w-3xl" data-reveal="">
-          <h2 className="font-display text-3xl leading-[1.05] font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-            I don&rsquo;t know everything. That&rsquo;s kind of the point.
-          </h2>
-          <p className="mt-6 font-prose text-lg leading-relaxed text-ink-soft">
-            The internet doesn&rsquo;t need another person performing certainty.
-            What gets published here is the working-out: what I&rsquo;m testing,
-            what held up, what fell over, and what quietly changed my mind.
-          </p>
+        <div
+          className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
+          data-reveal=""
+        >
+          <div className="max-w-3xl">
+            <h2 className="font-display text-3xl leading-[1.05] font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+              I don&rsquo;t know everything. That&rsquo;s kind of the point.
+            </h2>
+            <p className="mt-6 font-prose text-lg leading-relaxed text-ink-soft">
+              The internet doesn&rsquo;t need another person performing
+              certainty. What gets published here is the working-out: what
+              I&rsquo;m testing, what held up, what fell over, and what
+              quietly changed my mind.
+            </p>
+          </div>
+          <LoopDiagram className="hidden shrink-0 lg:block" />
         </div>
 
         <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -222,7 +249,29 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Small screens: swipe through the five rooms. */}
+        <div className="mt-12 sm:hidden" data-reveal="">
+          <SwipeCarousel ariaLabel="The five learning pillars" itemClassName="w-[84%] max-w-sm">
+            {pillars.map((pillar) => (
+              <PillarCard key={pillar.id} pillar={pillar} />
+            ))}
+            <div className="flex h-full min-h-[15rem] flex-col justify-center border-2 border-dashed border-ink/40 p-6">
+              <p className="prose-note text-[1.05rem]">
+                Something missing that you&rsquo;d want explored? That&rsquo;s
+                a genuinely useful thing to tell me.
+              </p>
+              <Link
+                href="/contact"
+                className="mt-4 font-bold text-pink-deep underline decoration-2 underline-offset-4 hover:decoration-4"
+              >
+                Suggest something →
+              </Link>
+            </div>
+          </SwipeCarousel>
+        </div>
+
+        {/* sm+: the full grid. */}
+        <div className="mt-12 hidden gap-5 sm:grid sm:grid-cols-2 lg:grid-cols-3">
           {pillars.map((pillar, i) => (
             <div key={pillar.id} data-reveal="" style={revealDelay(i)} className="h-full">
               <PillarCard pillar={pillar} />

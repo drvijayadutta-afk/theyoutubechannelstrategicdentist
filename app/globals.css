@@ -75,6 +75,14 @@
   }
 }
 
+/* Lets the orbit dot's angle interpolate smoothly through a single animation
+   instead of jumping between fixed rotate() steps. */
+@property --orbit-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 @layer components {
   /* Flat offset shadow — the brand never uses blurred/soft shadows. */
   .shadow-hard {
@@ -129,6 +137,29 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
   }
+
+  /* A note that's been picked up: snappier, slightly overshooting release. */
+  .sticky-spring {
+    transition: transform 0.4s var(--ease-out-back);
+  }
+
+  /* One dot, orbiting the loop diagram's dashed circle. Falls back to resting
+     at 0deg in browsers without @property — still reads fine as an accent. */
+  .loop-dot {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(var(--orbit-angle)) translateX(var(--r, 82px));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .loop-dot {
+      animation: orbit 10s linear infinite;
+    }
+  }
+  @keyframes orbit {
+    to {
+      --orbit-angle: 360deg;
+    }
+  }
 }
 
 @layer utilities {
@@ -171,6 +202,15 @@
 
   .text-balance-none {
     text-wrap: initial;
+  }
+
+  /* The swipe carousels: native scrollbar hidden, dots + arrows stand in for it. */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 

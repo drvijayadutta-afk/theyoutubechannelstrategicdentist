@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Pillar } from "@/lib/types";
 import { accentBar } from "@/components/ui/tag";
+import { PillarIcon } from "@/components/ui/pillar-icon";
 
 /**
  * Deliberately not numbered. The five pillars aren't a sequence, and 01/02/03
@@ -11,11 +12,14 @@ export function PillarCard({ pillar }: { pillar: Pillar }) {
     <article className="group relative flex h-full flex-col border-2 border-ink bg-paper transition-transform duration-200 hover:-translate-y-[3px] hover:shadow-hard motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <div aria-hidden="true" className={`h-2.5 ${accentBar[pillar.accent]}`} />
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="font-display text-xl leading-tight font-extrabold sm:text-2xl">
-          <Link href={`/blog?pillar=${pillar.id}`} className="after:absolute after:inset-0">
-            {pillar.name}
-          </Link>
-        </h3>
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-display text-xl leading-tight font-extrabold sm:text-2xl">
+            <Link href={`/blog?pillar=${pillar.id}`} className="after:absolute after:inset-0">
+              {pillar.name}
+            </Link>
+          </h3>
+          <PillarIcon id={pillar.id} className="h-10 w-10 shrink-0" />
+        </div>
         <p className="prose-note mt-1.5 text-[0.98rem]">{pillar.tagline}</p>
         <p className="mt-3 flex-1 font-prose leading-relaxed text-ink-soft">
           {pillar.description}
